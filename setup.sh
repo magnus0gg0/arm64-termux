@@ -73,6 +73,7 @@ syntax "arm64" "\.(s|S|asm)$"
 
 color brightyellow start="//" end="$"
 color brightyellow start="@" end="$"
+color brightyellow start="/\\*" end="\\*/"
 
 ## =========================
 ## STRINGS
@@ -96,7 +97,7 @@ color green "\.section\>"
 color lightgreen "\.(text|data|bss|rodata)\>"
 
 ## =========================
-## LABELS
+## LABELS GERAIS
 ## =========================
 
 color yellow "^[a-zA-Z_][a-zA-Z0-9_]*:"
@@ -111,7 +112,7 @@ color brightblue "\<(add|sub|mul|madd|msub|sdiv|udiv|and|orr|eor|lsl|lsr|asr|ror
 ## REGISTRADORES
 ## =========================
 
-color brightcyan "\<(x([0-9]|[1-2][0-9]|30)|w([0-9]|[1-2][0-9])|sp|lr|zr)\>"
+color brightcyan "\<(x([0-9]|[1-2][0-9]|30)|w([0-9]|[1-2][0-9]|30)|sp|lr|zr)\>"
 
 ## =========================
 ## CONDIÇÕES
@@ -127,18 +128,14 @@ color magenta "\:lo12\:"
 color magenta "\:hi12\:"
 
 ## =========================
-## NÚMEROS
+## NÚMEROS (BASES)
 ## =========================
 
-color magenta "\<[-]?[0-9]+\>"
-color magenta "0x[0-9a-fA-F]+"
-
-## =========================
-## IMEDIATOS
-## =========================
-
-color brightwhite "#[-]?[0-9]+"
-color brightwhite "#0x[0-9a-fA-F]+"
+## BINÁRIO / HEX / DECIMAL
+color brightgreen "0[bB][01]+"
+color magenta "0[xX][0-9a-fA-F]+"
+color brightwhite "\<[0-9]+\>"
+color brightwhite "-[0-9]+"
 
 ## =========================
 ## SEPARADORES
@@ -147,19 +144,12 @@ color brightwhite "#0x[0-9a-fA-F]+"
 color brightwhite ","
 
 ## =========================
-## SYS CALL
-## =========================
-
-color brightgreen "\<svc\>"
-
-## =========================
 ## ENDEREÇAMENTO
 ## =========================
 
 color cyan "\[[^]]+\]"
 
 ## ARM64_END
-
 EOF
 
 echo ""
