@@ -71,8 +71,8 @@ syntax "arm64" "\.(s|S|asm)$"
 ## PRIORIDADE MÁXIMA (COMENTÁRIOS)
 ## =========================
 
-color brightblack "//.*$"
-color brightblack "@.*$"
+color brightyellow start="//" end="$"
+color brightyellow start="@" end="$"
 
 ## =========================
 ## STRINGS
