@@ -1,32 +1,42 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-set -e
+set -euo pipefail
 
 echo "[+] Atualizando sistema..."
 pkg update -y && pkg upgrade -y
 
 echo "[+] Instalando dependências essenciais..."
-pkg install -y clang binutils nano
+pkg install -y binutils nano
 
 echo "[+] Instalando comando 'build' globalmente..."
 
 cat > "/data/data/com.termux/files/usr/bin/build" << 'EOF'
 #!/data/data/com.termux/files/usr/bin/bash
 
-set -e
+set -euo pipefail
 
-if [ -z "$1" ]; then
+if [ -z "${1:-}" ]; then
     echo "Uso: build arquivo.s [-run]"
     exit 1
 fi
 
 SRC="$1"
-RUN="$2"
+RUN="${2:-}"
+
+if [ ! -f "$SRC" ]; then
+    echo "Erro: arquivo não encontrado"
+    exit 1
+fi
 
 base=$(basename "$SRC" .s)
 
-echo "[+] Compilando (sem libc)..."
-clang -nostdlib -static "$SRC" -o "$base"
+echo "[+] Montando (assembly puro)..."
+as "$SRC" -o "$base.o"
+
+echo "[+] Linkando (sem libc, sem crt)..."
+ld "$base.o" -o "$base" -e _start
+
+rm "$base.o"
 
 echo "[OK] Executável gerado: $base"
 
@@ -52,7 +62,10 @@ grep -qxF "set autoindent" "$HOME/.nanorc" || echo "set autoindent" >> "$HOME/.n
 grep -qxF "set linenumbers" "$HOME/.nanorc" || echo "set linenumbers" >> "$HOME/.nanorc"
 
 echo ""
-echo "[✔] Ambiente ARM64 SEM LIBC pronto!"
+echo "[✔] Ambiente ARM64 PURO pronto!"
+echo ""
+echo "Sem libc | Sem clang | Sem runtime"
+echo "Controle total via syscalls"
 echo ""
 echo "Nano configurado com:"
 echo "  - tabsize 4"
